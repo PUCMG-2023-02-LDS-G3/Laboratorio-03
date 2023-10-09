@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id           String        @id @default(uuid())
+  name         String
+  cpf          String        @unique
+  email        String        @unique
+  password     String
+  coins        Int
+  schoolId     String
+  school       School        @relation(fields: [schoolId], references: [id])
+  transactions Transaction[]
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  quantity    Int
+  date        DateTime @default(now())
+  description String
+  toCompanyId String?
+  studentId   String?
+  teacherId   String?
+  Student     Student? @relation(fields: [studentId], references: [id])
+  Teacher     Teacher? @relation(fields: [teacherId], references: [id])
+  toCompany   Company? @relation(fields: [toCompanyId], references: [id])
+}
+
+model School {
+  id       String    @id @default(uuid())
+  name     String
+  teachers Teacher[]
+  students Student[]
+  adminId  String?
+  Admin    Admin?    @relation(fields: [adminId], references: [id])
+}
+
+model Teacher {
+  id           String        @id @default(uuid())
+  name         String
+  cpf          String        @unique
+  email        String        @unique
+  password     String
+  coins        Int
+  schoolId     String
+  transactions Transaction[]
+  adminId      String?
+  Admin        Admin?        @relation(fields: [adminId], references: [id])
+  school       School        @relation(fields: [schoolId], references: [id])
+}
+
+model Company {
+  id           String        @id @default(uuid())
+  name         String
+  cnpj         String        @unique
+  email        String        @unique
+  password     String
+  advantages   Advantage[]
+  transactions Transaction[]
+  adminId      String?
+  Admin        Admin?        @relation(fields: [adminId], references: [id])
+}
+
+model Advantage {
+  id        String   @id @default(uuid())
+  name      String
+  price     Int
+  companyId String?
+  Company   Company? @relation(fields: [companyId], references: [id])
+}
+
+model Admin {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String
+  schools   School[]
+  teachers  Teacher[]
+  companies Company[]
+}
