@@ -1,24 +1,71 @@
-import { PrismaClient, School } from "@prisma/client";
+import { PrismaClient, School, Teacher } from "@prisma/client";
 
-class SchollService {
+class SchoolService {
   db: PrismaClient;
 
   constructor(db: PrismaClient) {
     this.db = db;
   }
 
-  async createSchool (school: School) {
+  async createSchool(school: School) {
     await this.db.school.create({
       data: {
-       ...school 
+        ...school,
+      },
+    });
+  }
+
+  async getSchools() {
+    return await this.db.school.findMany({include: {
+      students: true,
+      teachers: true
+    }});
+  }
+
+  async getSchoolByName(name: string) {
+    return await this.db.school.findFirstOrThrow({
+      where: {
+        name: name
       }
     })
   }
 
-  async getSchools () {
-    return await this.db.school.findMany()
+  async getTeachers(id: string) {
+    return await this.db.school.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        teachers: true,
+      },
+    });
   }
-    
+
+  async getStudents(id: string) {
+    return await this.db.school.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        students: true,
+      },
+    });
+  }
+
+  async addTeacher(id: string, teacher: Teacher) {
+    await this.db.school.update({
+      where: {
+        id: id,
+      },
+      data: {
+        teachers: {
+          create: {
+            ...teacher,
+          },
+        },
+      },
+    });
+  }
 }
 
-export default SchollService;
+export default SchoolService;
