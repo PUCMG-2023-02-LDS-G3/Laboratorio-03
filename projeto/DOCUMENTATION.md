@@ -32,6 +32,10 @@ Por fim, alunos, professores e empresas parceiras precisam ter um login e uma se
 
 <img src="./UML/Diagrama_de_classes.png" />
 
+## Diagrama de Entidade
+
+<img src="./Entidade Relacionamento/Diagrama_ER.png"/>
+
 ## Diagrama de classes
 
 [Historia_de_usuarios](./historias_de_usuarios.md)
