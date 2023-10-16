@@ -18,8 +18,12 @@ model Student {
   password     String
   coins        Int
   schoolId     String
+  rg           String        @default("21.333.333")
+  address      String        @default("Belo Horizonte")
+  major        String        @default("Engenharia de software")
   school       School        @relation(fields: [schoolId], references: [id])
   transactions Transaction[]
+  advantages   Advantage[]
 }
 
 model Transaction {
@@ -40,8 +44,6 @@ model School {
   name     String
   teachers Teacher[]
   students Student[]
-  adminId  String?
-  Admin    Admin?    @relation(fields: [adminId], references: [id])
 }
 
 model Teacher {
@@ -53,8 +55,6 @@ model Teacher {
   coins        Int
   schoolId     String
   transactions Transaction[]
-  adminId      String?
-  Admin        Admin?        @relation(fields: [adminId], references: [id])
   school       School        @relation(fields: [schoolId], references: [id])
 }
 
@@ -66,24 +66,21 @@ model Company {
   password     String
   advantages   Advantage[]
   transactions Transaction[]
-  adminId      String?
-  Admin        Admin?        @relation(fields: [adminId], references: [id])
 }
 
 model Advantage {
   id        String   @id @default(uuid())
   name      String
   price     Int
+  studentId String?
   companyId String?
   Company   Company? @relation(fields: [companyId], references: [id])
+  Student   Student? @relation(fields: [studentId], references: [id])
 }
 
 model Admin {
-  id        String    @id @default(uuid())
-  name      String
-  email     String    @unique
-  password  String
-  schools   School[]
-  teachers  Teacher[]
-  companies Company[]
+  id       String @id @default(uuid())
+  name     String
+  email    String @unique
+  password String
 }
