@@ -4,11 +4,13 @@ import { randomUUID } from "crypto";
 import AdminService from "../services/adminService.ts";
 import TeacherService from "../services/teacherService.ts";
 import SchoolService from "../services/schoolService.ts";
+import TransactionService from "../services/transactionService.ts";
 
 const prisma = new PrismaClient();
 const adminService = new AdminService(prisma);
 const schoolService = new SchoolService(prisma);
 const teacherService = new TeacherService(prisma);
+const transactionService = new TransactionService(prisma);
 const route = Router();
 
 route.post("/login", async (req: Request, res: Response) => {
@@ -56,7 +58,7 @@ route.post("/school/register", async (req: Request, res: Response) => {
 
     return res.status(201).json(school);
   } catch (err) {
-    return res.status(500).json({ error: err });
+    return res.status(500).json({ message: "Erro ao criar nova escola",  error: err });
   }
 });
 
@@ -73,7 +75,6 @@ route.post("/school/teacher/register", async (req: Request, res: Response) => {
     if (!email || !name || !cpf || !password || !schoolId) {
       return res.status(400).json({ message: "Dados insuficientes" });
     }
-
     const emailAlreadyExists = await teacherService.getTeacherByEmail(email);
 
     if (emailAlreadyExists) {
@@ -120,9 +121,18 @@ route.post("/school/teacher/addCoins", async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Professor não encontrado" });
     }
 
-    await teacherService.updateCoins(teacher.id, teacher.coins + amount);
+    const updatedTeacher = await teacherService.updateCoins(teacher.id, teacher.coins + amount);
+    await transactionService.createTransaction({
+      id: randomUUID(),
+      quantity: amount,
+      studentId: null,
+      teacherId: teacher.id,
+      date: new Date(),
+      description: "Adicionado pelo admin",
+      toCompanyId: null,
+    })
 
-    return res.status(201).json(teacher);
+    return res.status(200).json(updatedTeacher);
   } catch (err) {
     return res.status(500).json({ message: "Erro com o prisma", error: err });
   }

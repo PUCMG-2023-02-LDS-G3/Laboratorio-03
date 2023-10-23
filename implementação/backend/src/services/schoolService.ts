@@ -23,7 +23,7 @@ class SchoolService {
   }
 
   async getSchoolByName(name: string) {
-    return await this.db.school.findFirstOrThrow({
+    return await this.db.school.findFirst({
       where: {
         name: name
       }

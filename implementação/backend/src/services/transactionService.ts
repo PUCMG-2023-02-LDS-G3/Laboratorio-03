@@ -23,6 +23,14 @@ class TransactionService {
     });
   }
 
+  async getTransactionByCompany(uuid: string) {
+    return await this.db.transaction.findMany({
+      where: {
+        toCompanyId: uuid,
+      },
+    });
+  }
+
   async createTransaction(transaction: Transaction) {
     await this.db.transaction.create({
       data: {

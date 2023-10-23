@@ -24,7 +24,7 @@ class TeacherService {
   }
 
   async getTeacherByUUID(uuid: string) {
-    return await this.db.teacher.findUniqueOrThrow({
+    return await this.db.teacher.findUnique({
       where: {
         id: uuid,
       },
@@ -35,7 +35,7 @@ class TeacherService {
   }
 
   async getTeacherByEmail(email: string) {
-    return await this.db.teacher.findUniqueOrThrow({
+    return await this.db.teacher.findUnique({
       where: {
         email: email,
       },
@@ -46,7 +46,7 @@ class TeacherService {
   }
 
   async getTeacherByCPF(cpf: string) {
-    return await this.db.teacher.findUniqueOrThrow({
+    return await this.db.teacher.findUnique({
       where: {
         cpf: cpf,
       },

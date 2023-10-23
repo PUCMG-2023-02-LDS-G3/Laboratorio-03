@@ -3,10 +3,12 @@ import { PrismaClient } from "@prisma/client";
 import StudentService from "../services/studentService.js";
 import { randomUUID } from "crypto";
 import AdvantageService from "../services/advantageService.ts";
+import TransactionService from "../services/transactionService.ts";
 
 const prisma = new PrismaClient();
 const studentService = new StudentService(prisma);
 const advantageService = new AdvantageService(prisma);
+const transactionService = new TransactionService(prisma);
 const route = Router();
 
 route.get("/", async (req: Request, res: Response) => {
@@ -61,13 +63,13 @@ route.post("/register", async (req: Request, res: Response) => {
 });
 
 route.post("/exchange/advantage", async (req: Request, res: Response) => {
-  const { email, advantageId } = req.body;
+  const { id, advantageId } = req.body;
 
-  if (!email || !advantageId) {
+  if (!id || !advantageId) {
     return res.status(400).json({ error: "Dados insuficientes" });
   }
 
-  const student = await studentService.getStudentByEmail(email);
+  const student = await studentService.getStudentByUUID(id);
 
   if (!student) {
     return res.status(400).json({ error: "Estudante não encontrado" });
@@ -83,8 +85,44 @@ route.post("/exchange/advantage", async (req: Request, res: Response) => {
     return res.status(400).json({ error: "Saldo insuficiente" });
   }
 
+  await studentService.addAdvantage(student.id, {
+    id: randomUUID(),
+    companyId: advantage.companyId,
+    name: advantage.name,
+    price: advantage.price,
+  });
+
+
   await studentService.updateCoins(student.id, student.coins - advantage.price);
-  await studentService.addAdvantage(email, advantage);
+  await transactionService.createTransaction({
+    id: randomUUID(),
+    quantity: advantage.price,
+    studentId: student.id,
+    teacherId: null,
+    date: new Date(),
+    description: advantage.name,
+    toCompanyId: advantage.companyId,
+  });
+});
+
+route.post("/transactions", async (req: Request, res: Response) => {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: "Dados insuficientes" });
+  }
+
+  const student = await studentService.getStudentByUUID(id);
+
+  if (!student) {
+    return res.status(400).json({ error: "Estudante não encontrado" });
+  }
+
+  const transactions = await transactionService.getTransactionsByStudent(
+    student.id
+  );
+
+  return res.status(200).json(transactions);
 });
 
 export default route;
