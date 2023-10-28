@@ -3,21 +3,24 @@ import ReactDOM from "react-dom/client"
 import Routes from "./Routes.js"
 
 import { ChakraProvider } from "@chakra-ui/react"
-import UserProvider from "./provider/UserProvider.js"
-import ContractProvider from "./provider/ContractProvider.js"
 import NotifyProvider from "./provider/NotifyProvider.js"
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import UserProvider from "./provider/UserProvider.js"
+
+const queryClient = new QueryClient()
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ChakraProvider>
-      <UserProvider>
-        <ContractProvider>
+      <QueryClientProvider client={queryClient}>
+        <UserProvider>
           <>
             <NotifyProvider />
             <Routes />
           </>
-        </ContractProvider>
-      </UserProvider>
+        </UserProvider>
+      </QueryClientProvider>
     </ChakraProvider>
   </React.StrictMode>
 )

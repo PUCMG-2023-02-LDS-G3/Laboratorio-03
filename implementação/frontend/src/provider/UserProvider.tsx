@@ -1,23 +1,17 @@
-import { createContext, useCallback } from "react"
+import { createContext } from "react"
 import { useLocalState } from "../Utils/useLocalStorage"
-import notify from "../hooks/useNotify"
 
-interface UserContextData {
-  user: {
-    email: string
-    password: string
-    isCliente: boolean
-  }
-  SingIn: (email: string, password: string, isCliente: boolean) => boolean
-  SingOut: () => void
-  isUserLogged: () => boolean
-  createAccount: (email: string, password: string, isCliente: boolean) => void
-}
-
-interface Account {
+export type UserSchema = {
   email: string
   password: string
-  isCliente: boolean
+  type: string
+}
+
+interface UserContextData {
+  user: UserSchema
+  SingIn: (user: UserSchema) => void
+  SingOut: () => void
+  isUserLogged: () => boolean
 }
 
 interface UserProviderProps {
@@ -27,47 +21,25 @@ interface UserProviderProps {
 export const UserContext = createContext({} as UserContextData)
 
 function UserProvider({ children }: UserProviderProps) {
-  const [user, setUser] = useLocalState("@user", {
-    email: "",
-    password: "",
-    isCliente: false,
-  })
-  const [accounts, setAccounts] = useLocalState("@accounts", [] as Account[])
+  const [user, setUser] = useLocalState<UserSchema>(
+    "TrocaCoins@user",
+    {} as UserSchema
+  )
 
-  const SingIn = (email: string, password: string, isCliente: boolean) => {
-    const account = accounts.find(
-      (acc) => acc.email === email && acc.password === password
-    )
-
-    if (account && account.isCliente === isCliente) {
-      setUser({ email, password, isCliente })
-      notify({ message: "Logado com sucesso!", type: "success" })
-      return true
-    }
-
-    return false
+  const SingIn = (user: UserSchema) => {
+    setUser(user)
   }
 
   const SingOut = () => {
-    localStorage.removeItem("@user")
-    notify({ message: "Deslogado com sucesso!", type: "success" })
+    setUser((u) => {
+      return { ...u, email: "", password: "" }
+    })
   }
 
-  const createAccount = useCallback(
-    (email: string, password: string, isCliente: boolean) => {
-      setAccounts((acc) => [...acc, { email, password, isCliente }])
-      notify({ message: "Conta criada com sucesso!", type: "success" })
-    },
-    [setAccounts]
-  )
-
-  const isUserLogged = useCallback(() => {
-    return user.email !== "" && user.password !== ""
-  }, [user])
+  const isUserLogged = () => user.email !== "" && user.password !== ""
 
   return (
-    <UserContext.Provider
-      value={{ SingIn, SingOut, user, isUserLogged, createAccount }}>
+    <UserContext.Provider value={{ SingIn, SingOut, user, isUserLogged }}>
       {children}
     </UserContext.Provider>
   )

@@ -16,8 +16,9 @@ import { useForm } from "react-hook-form"
 import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import api from "../../Utils/api"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import notify from "../../hooks/useNotify"
+import useGetSchools from "../../hooks/useQuery/useGetSchools"
 
 const schema = yup.object().shape({
   id: yup.string().required("Obrigatório"),
@@ -33,11 +34,6 @@ const schema = yup.object().shape({
     .oneOf([yup.ref("password")], "As senhas precisam ser iguais"),
 })
 
-type SchoolSchema = {
-  id: string
-  name: string
-}
-
 function SingUpPage() {
   const {
     register,
@@ -45,21 +41,12 @@ function SingUpPage() {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) })
 
-  const [schools, setSchools] = useState<SchoolSchema[]>([])
-
-  useEffect(() => {
-    const getSchools = async () => {
-      const { data } = await api.get("/school/")
-      setSchools(data)
-    }
-
-    getSchools()
-  }, [])
-
   const navigate = useNavigate()
   const [userType, setUserType] = useState<"estudante" | "parceiro">(
     "estudante"
   )
+
+  const { data: schools, isLoading } = useGetSchools()
 
   const onSubmit = async (data: any) => {
     try {
@@ -71,6 +58,8 @@ function SingUpPage() {
             name: data.name,
             cpf: data.id,
             schoolId: data.school,
+            rg: "",
+            address: "",
           })
           notify({ message: "Conta criada com sucesso" })
           break
@@ -87,7 +76,6 @@ function SingUpPage() {
           notify({ message: "Tipo de usuário inválido", type: "error" })
           break
       }
-
       navigate("/")
     } catch (error) {
       notify({ message: "Erro ao criar conta", type: "error" })
@@ -125,11 +113,17 @@ function SingUpPage() {
                     <Box>
                       <Text>Instituição de ensino</Text>
                       <Select {...register("school")}>
-                        {schools.map((school) => (
-                          <option key={school.id} value={school.id}>
-                            {school.name}
-                          </option>
-                        ))}
+                        {isLoading ? (
+                          <option>Carregando...</option>
+                        ) : (
+                          <>
+                            {schools?.map((school) => (
+                              <option key={school.id} value={school.id}>
+                                {school.name}
+                              </option>
+                            ))}
+                          </>
+                        )}
                       </Select>
                     </Box>
                     {errors.id && (
@@ -198,14 +192,14 @@ function SingUpPage() {
                     <Button
                       key={type}
                       onClick={() => handleChangeUserType(type as any)}
-                      colorScheme={userType === type ? "facebook" : "gray"}>
+                      colorScheme={userType === type ? "teal" : "gray"}>
                       {String(type).toLocaleUpperCase()}
                     </Button>
                   ))}
                 </HStack>
               </Box>
 
-              <Button type="submit" colorScheme="facebook">
+              <Button type="submit" colorScheme="orange">
                 Criar conta
               </Button>
             </VStack>
