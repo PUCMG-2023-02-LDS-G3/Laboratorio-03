@@ -66,6 +66,25 @@ class TeacherService {
       },
     });
   }
+
+  async updateTeacher(teacher: Teacher) {
+    return await this.db.teacher.update({
+      where: {
+        id: teacher.id,
+      },
+      data: {
+        ...teacher,
+      },
+    });
+  }
+
+  async deleteTeacher(uuid: string) {
+    return await this.db.teacher.delete({
+      where: {
+        id: uuid,
+      },
+    });
+  }
 }
 
 export default TeacherService;

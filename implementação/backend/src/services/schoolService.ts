@@ -16,18 +16,47 @@ class SchoolService {
   }
 
   async getSchools() {
-    return await this.db.school.findMany({include: {
-      students: true,
-      teachers: true
-    }});
+    return await this.db.school.findMany({
+      include: {
+        students: true,
+        teachers: true,
+      },
+    });
   }
 
   async getSchoolByName(name: string) {
     return await this.db.school.findFirst({
       where: {
-        name: name
-      }
-    })
+        name: name,
+      },
+    });
+  }
+
+  async getSchoolByUUID(uuid: string) {
+    return await this.db.school.findFirst({
+      where: {
+        id: uuid,
+      },
+    });
+  }
+
+  async updateSchool(school: School) {
+    return await this.db.school.update({
+      where: {
+        id: school.id,
+      },
+      data: {
+        ...school,
+      },
+    });
+  }
+
+  async deleteSchool(uuid: string) {
+    return await this.db.school.delete({
+      where: {
+        id: uuid,
+      },
+    });
   }
 
   async getTeachers(id: string) {
