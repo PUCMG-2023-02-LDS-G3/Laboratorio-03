@@ -57,13 +57,13 @@ route.post("/advantage", async (req: Request, res: Response) => {
 })
 
 route.post("/advantage/register", async (req: Request, res: Response) => {
-  const { id, name, price } = req.body;
+  const { companyId, name, price } = req.body;
 
-  if(!id || !name || !price) {
+  if(!companyId || !name || !price) {
     return res.status(400).json({ error: "Dados insuficientes" });
   }
 
-  const advantage = await companyService.addAdvantage(id, {
+  const advantage = await companyService.addAdvantage(companyId, {
     id: randomUUID(),
     name,
     price,
