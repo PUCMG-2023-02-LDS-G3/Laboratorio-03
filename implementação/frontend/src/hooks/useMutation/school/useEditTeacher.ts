@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query"
-import api from "../../Utils/api"
-import { TeacherSchema } from "../useQuery/useGetSchools"
+import api from "../../../Utils/api"
+import { TeacherSchema } from "../../useQuery/useGetSchools"
 
 function useEditTeacher() {
     return useMutation({

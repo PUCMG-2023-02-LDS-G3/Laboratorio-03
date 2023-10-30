@@ -1,4 +1,4 @@
-import api from "../../Utils/api"
+import api from "../../../Utils/api"
 import { useMutation } from "@tanstack/react-query"
 
 export type AddTeacherProps = {

@@ -2,7 +2,7 @@ import { Button, Flex, Input, Text, VStack } from "@chakra-ui/react"
 import { useForm } from "react-hook-form"
 import { useNavigate, useParams } from "react-router-dom"
 import notify from "../../../../hooks/useNotify"
-import useEditSchool from "../../../../hooks/useMutation/useEditSchool"
+import useEditSchool from "../../../../hooks/useMutation/school/useEditSchool"
 import { useEffect, useState } from "react"
 import useGetSchools from "../../../../hooks/useQuery/useGetSchools"
 

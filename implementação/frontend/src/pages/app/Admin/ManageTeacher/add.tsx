@@ -4,7 +4,7 @@ import notify from "../../../../hooks/useNotify"
 
 import useAddTeacher, {
   AddTeacherProps,
-} from "../../../../hooks/useMutation/useAddTeacher"
+} from "../../../../hooks/useMutation/school/useAddTeacher"
 import useGetSchools from "../../../../hooks/useQuery/useGetSchools"
 
 function AddTeacher() {

@@ -18,7 +18,7 @@ import {
 import useGetSchools from "../../../../hooks/useQuery/useGetSchools"
 import { LuGripVertical, LuPencil, LuTrash } from "react-icons/lu"
 import { useNavigate } from "react-router-dom"
-import useDeleteSchool from "../../../../hooks/useMutation/useDeleteSchool"
+import useDeleteSchool from "../../../../hooks/useMutation/school/useDeleteSchool"
 import notify from "../../../../hooks/useNotify"
 
 function ManageSchool() {

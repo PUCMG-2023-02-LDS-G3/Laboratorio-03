@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react"
 import { LuGripVertical, LuPencil, LuTrash } from "react-icons/lu"
 import { useNavigate } from "react-router-dom"
-import useDeleteSchool from "../../../../hooks/useMutation/useDeleteSchool"
+import useDeleteSchool from "../../../../hooks/useMutation/school/useDeleteSchool"
 import notify from "../../../../hooks/useNotify"
 import useGetSchools, {
   TeacherSchema,
@@ -28,7 +28,7 @@ import useGetSchools, {
 import { useEffect, useState } from "react"
 import api from "../../../../Utils/api"
 import { useForm } from "react-hook-form"
-import useAddCoinToTeacher from "../../../../hooks/useMutation/useAddCoinToTeacher"
+import useAddCoinToTeacher from "../../../../hooks/useMutation/school/useAddCoinToTeacher"
 
 function ManageTeacher() {
   const { data: schoolsData, isLoading } = useGetSchools()

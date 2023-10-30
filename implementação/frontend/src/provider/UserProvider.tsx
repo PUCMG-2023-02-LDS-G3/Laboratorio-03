@@ -5,6 +5,7 @@ export type UserSchema = {
   email: string
   password: string
   type: string
+  id: string
 }
 
 interface UserContextData {

@@ -6,20 +6,20 @@ import {
 import Menu from "../../../components/Menu/Menu"
 import { Link } from "react-router-dom"
 
-type AdminLayoutProps = {
+type CompanyLayoutProps = {
   children: React.ReactNode
 }
 
-function AdminLayout({ children }: AdminLayoutProps) {
+function CompanyLayout({ children }: CompanyLayoutProps) {
   return (
     <div>
-      <Menu title="Menu do admin">
+      <Menu title="Menu do parceiro">
         <Flex flexDir={"column"} gap={8}>
-          <Link to={"/app/admin/school"}>
-            <ChakraLink>Instituilções de ensino</ChakraLink>
+          <Link to={"/app/company/advantages"}>
+            <ChakraLink>Vantagens</ChakraLink>
           </Link>
-          <Link to={"/app/admin/teacher"}>
-            <ChakraLink>Professores</ChakraLink>
+          <Link to={"/app/company/profile"}>
+            <ChakraLink>Perfil</ChakraLink>
           </Link>
         </Flex>
       </Menu>
@@ -31,4 +31,4 @@ function AdminLayout({ children }: AdminLayoutProps) {
   )
 }
 
-export default AdminLayout
+export default CompanyLayout

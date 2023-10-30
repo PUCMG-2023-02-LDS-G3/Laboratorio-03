@@ -4,6 +4,7 @@ import LoginPage from "./pages/Login/LoginPage"
 import SingUpPage from "./pages/SingUp/SingUpPage"
 
 import Admin from "./pages/app/Admin"
+import Company from "./pages/app/Company"
 
 function Routes() {
   return (
@@ -13,6 +14,9 @@ function Routes() {
         <Route path="/singup" element={<SingUpPage />} />
         <Route path="/app">
           <Route path="admin/*" element={<Admin />} />
+        </Route>
+        <Route path="/app">
+          <Route path="company/*" element={<Company />} />
         </Route>
       </AppRoutes>
     </BrowserRouter>

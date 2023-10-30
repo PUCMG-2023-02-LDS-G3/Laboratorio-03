@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 import useGetSchools, {
   TeacherSchema,
 } from "../../../../hooks/useQuery/useGetSchools"
-import useEditTeacher from "../../../../hooks/useMutation/useEditTeacher"
+import useEditTeacher from "../../../../hooks/useMutation/school/useEditTeacher"
 
 function EditTeacher() {
   const { id, schoolId } = useParams()

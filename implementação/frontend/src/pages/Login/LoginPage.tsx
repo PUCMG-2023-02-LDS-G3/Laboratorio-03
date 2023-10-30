@@ -18,7 +18,6 @@ import api from "../../Utils/api"
 import notify from "../../hooks/useNotify"
 import useUser from "../../hooks/useUser"
 import { UserType } from "../../Utils/enum/UserType"
-import { UserSchema } from "../../provider/UserProvider"
 
 const schema = yup.object().shape({
   email: yup.string().required("Obrigatório"),
@@ -46,37 +45,32 @@ function LoginPage() {
   const { SingIn } = useUser()
 
   const onSubmit = async ({ email, password, type }: LoginSchema) => {
-    const newUser: UserSchema = {
-      email,
-      password,
-      type: "",
-    }
+    let response
     try {
       switch (type) {
         case "student":
-          await api.post("/student/login", { email, password })
-          newUser.type = UserType.STUDENT
-          SingIn(newUser)
+          response = await api.post("/student/login", { email, password })
+          SingIn({ email, password, type: UserType.STUDENT, id: response.data.id})
           notify({ message: "Login do aluno realizado com sucesso" })
-          navigateTo("/app/student/home")
+          navigateTo("/app/student")
 
           break
         case "company":
-          await api.post("/company/login", { email, password })
-          SingIn({ email, password, type: UserType.COMPANY })
+          response = await api.post("/company/login", { email, password })
+          SingIn({ email, password, type: UserType.COMPANY, id: response.data.id })
           notify({ message: "Login da parceira realizado com sucesso" })
-          navigateTo("/app/company/home")
+          navigateTo("/app/company")
 
           break
         case "teacher":
-          await api.post("/teacher/login", { email, password })
-          SingIn({ email, password, type: UserType.TEACHER })
+          response = await api.post("/teacher/login", { email, password })
+          SingIn({ email, password, type: UserType.TEACHER, id: response.data.id})
           notify({ message: "Login do professor realizado com sucesso" })
-          navigateTo("/app/teacher/home")
+          navigateTo("/app/teacher")
           break
         case "admin":
-          await api.post("/admin/login", { email, password })
-          SingIn({ email, password, type: UserType.ADMIN })
+          response = await api.post("/admin/login", { email, password })
+          SingIn({ email, password, type: UserType.ADMIN , id: response.data.id})
           notify({ message: "Login do administrador realizado com sucesso" })
           navigateTo("/app/admin")
           break

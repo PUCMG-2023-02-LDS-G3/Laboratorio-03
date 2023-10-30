@@ -1,10 +1,10 @@
 import {
-  Box,
   Button,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
   DrawerContent,
+  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   Flex,
@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react"
 import useDrawer from "../../hooks/useDrawer"
 import { LuMenu } from "react-icons/lu"
+import { useNavigate } from "react-router-dom"
 
 type MenuProps = {
   title: string
@@ -20,6 +21,12 @@ type MenuProps = {
 
 function Menu({ title, children }: MenuProps) {
   const { isOpen, onClose, onOpen } = useDrawer()
+
+  const navigateTo = useNavigate()
+
+  const handleLoggout = () => {
+    navigateTo("/")
+  }
 
   return (
     <>
@@ -44,6 +51,11 @@ function Menu({ title, children }: MenuProps) {
           <DrawerHeader>{title}</DrawerHeader>
 
           <DrawerBody>{children}</DrawerBody>
+          <DrawerFooter>
+            <Button onClick={handleLoggout} colorScheme="red" w="100%">
+              Sair
+            </Button>
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </>

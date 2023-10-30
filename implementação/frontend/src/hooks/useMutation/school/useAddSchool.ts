@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query"
-import api from "../../Utils/api"
+import api from "../../../Utils/api"
 
 function useAddSchool() {
   return useMutation({

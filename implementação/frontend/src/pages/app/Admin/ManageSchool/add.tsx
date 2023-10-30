@@ -1,7 +1,7 @@
 import { Button, Flex, Input, Text, VStack } from "@chakra-ui/react"
 import { useForm } from "react-hook-form"
 import notify from "../../../../hooks/useNotify"
-import useAddSchool from "../../../../hooks/useMutation/useAddSchool"
+import useAddSchool from "../../../../hooks/useMutation/school/useAddSchool"
 
 function AddSchool() {
   const { register, handleSubmit } = useForm({
