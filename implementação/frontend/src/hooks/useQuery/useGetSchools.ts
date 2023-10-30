@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import api from "../../Utils/api"
 
-type StudentSchema = {
+export type StudentSchema = {
   address: string
   coins: number
   cpf: number
@@ -9,7 +9,7 @@ type StudentSchema = {
   id: string
   major: string
   name: string
-  password: number
+  password: string
   rg: number
   schoolId: string
 }

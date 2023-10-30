@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import { Advantage, PrismaClient } from "@prisma/client";
 import { randomUUID } from "crypto";
 import CompanyService from "../services/companyService.ts";
 
@@ -10,7 +10,7 @@ const route = Router();
 route.get("/", async (req: Request, res: Response) => {
   const companies = await companyService.getCompanies();
   return res.status(200).json(companies);
-})
+});
 
 route.post("/login", async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -25,7 +25,7 @@ route.post("/login", async (req: Request, res: Response) => {
 route.post("/register", async (req: Request, res: Response) => {
   const { email, password, name, cnpj } = req.body;
 
-  if(!email || !password || !name || !cnpj) {
+  if (!email || !password || !name || !cnpj) {
     return res.status(400).json({ error: "Dados insuficientes" });
   }
 
@@ -40,26 +40,60 @@ route.post("/register", async (req: Request, res: Response) => {
   return res.status(201).json(company);
 });
 
-route.post("/advantage", async (req: Request, res: Response) => {
+route.post("/profile", async (req: Request, res: Response) => {
   const { id } = req.body;
 
-  if(!id) {
+  if (!id) {
     return res.status(400).json({ error: "Dados insuficientes" });
   }
 
   const company = await companyService.getCompanyByUUID(id);
 
-  if(!company) {
+  if (!company) {
+    return res.status(400).json({ error: "Empresa não encontrada" });
+  }
+
+  return res.status(200).json(company);
+});
+
+route.post("/profile/update", async (req: Request, res: Response) => {
+  const { id, name, password } = req.body;
+
+  if (!id || !name || !password) {
+    return res.status(400).json({ error: "Dados insuficientes" });
+  }
+
+  const oldCompany = await companyService.getCompanyByUUID(id);
+
+  if(!oldCompany) {
+    return res.status(400).json({ error: "Empresa não encontrada" });
+  }
+
+  const company = await companyService.updateCompany({...oldCompany, name, password});
+
+  return res.status(201).json(company);
+});
+
+route.post("/advantage", async (req: Request, res: Response) => {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: "Dados insuficientes" });
+  }
+
+  const company = await companyService.getCompanyByUUID(id);
+
+  if (!company) {
     return res.status(400).json({ error: "Empresa não encontrada" });
   }
 
   return res.status(200).json(company.advantages);
-})
+});
 
 route.post("/advantage/register", async (req: Request, res: Response) => {
   const { companyId, name, price } = req.body;
 
-  if(!companyId || !name || !price) {
+  if (!companyId || !name || !price) {
     return res.status(400).json({ error: "Dados insuficientes" });
   }
 
@@ -67,10 +101,50 @@ route.post("/advantage/register", async (req: Request, res: Response) => {
     id: randomUUID(),
     name,
     price,
-    studentId: null
+    studentId: null,
   });
 
   return res.status(201).json(advantage);
-})
+});
+
+route.post("/advantage/update", async (req: Request, res: Response) => {
+  const { companyId, id, name, price } = req.body;
+
+  if (!companyId || !id || !name || !price) {
+    return res.status(400).json({ error: "Dados insuficientes" });
+  }
+
+  const oldAdvantage = await companyService.getAdvantageByUUID(companyId, id);
+
+  const editedAdvantage = oldAdvantage?.advantages
+    .filter((advantage) => advantage.id === id)
+    .reduce((acc, advantage) => {
+      return {
+        ...advantage,
+        name,
+        price,
+      };
+    }, {} as Advantage);
+
+  if (!editedAdvantage) {
+    return res.status(400).json({ error: "Vantagem não encontrada" });
+  }
+
+  const advantage = await companyService.updateAdvantage(editedAdvantage);
+
+  return res.status(201).json(advantage);
+});
+
+route.post("/advantage/delete", async (req: Request, res: Response) => {
+  const { companyId, id } = req.body;
+
+  if (!companyId || !id) {
+    return res.status(400).json({ error: "Dados insuficientes" });
+  }
+
+  const advantage = await companyService.deleteAdvantage(companyId, id);
+
+  return res.status(201).json(advantage);
+});
 
 export default route;

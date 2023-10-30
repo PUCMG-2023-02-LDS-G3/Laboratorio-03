@@ -25,6 +25,17 @@ class CompanyService {
     });
   }
 
+  async updateCompany(company: Company) {
+    return await this.db.company.update({
+      where: {
+        id: company.id,
+      },
+      data: {
+        ...company,
+      },
+    });
+  }
+
   async getCompanyByEmail(email: string) {
     return await this.db.company.findUnique({
       where: {
@@ -49,6 +60,7 @@ class CompanyService {
     });
   }
 
+
   async addAdvantage(id: string, advantage: Omit<Advantage, "companyId">) {
     await this.db.company.update({
       where: {
@@ -67,10 +79,10 @@ class CompanyService {
     });
   }
 
-  async getAdvantageByUUID(id: string, uuid: string) {
+  async getAdvantageByUUID(companyId: string, uuid: string) {
     return await this.db.company.findUnique({
       where: {
-        id: id,
+        id: companyId,
       },
       select: {
         advantages: {
@@ -96,6 +108,34 @@ class CompanyService {
       },
     });
   }
+
+
+  async updateAdvantage(advantage: Advantage) {
+    return await this.db.advantage.update({
+      where: {
+        id: advantage.id,
+      },
+      data: {
+        ...advantage,
+      },
+    });
+  }
+
+  async deleteAdvantage(id: string, uuid: string) {
+    await this.db.company.update({
+      where: {
+        id: id,
+      },
+      data: {
+        advantages: {
+          delete: {
+            id: uuid,
+          },
+        },
+      },
+    });
+  }
+
 }
 
 export default CompanyService;

@@ -50,27 +50,50 @@ function LoginPage() {
       switch (type) {
         case "student":
           response = await api.post("/student/login", { email, password })
-          SingIn({ email, password, type: UserType.STUDENT, id: response.data.id})
+          SingIn({
+            email,
+            password,
+            type: UserType.STUDENT,
+            id: response.data.id,
+            coins: response.data.coins,
+          })
           notify({ message: "Login do aluno realizado com sucesso" })
           navigateTo("/app/student")
 
           break
         case "company":
           response = await api.post("/company/login", { email, password })
-          SingIn({ email, password, type: UserType.COMPANY, id: response.data.id })
+          SingIn({
+            email,
+            password,
+            type: UserType.COMPANY,
+            id: response.data.id,
+          })
           notify({ message: "Login da parceira realizado com sucesso" })
           navigateTo("/app/company")
 
           break
         case "teacher":
           response = await api.post("/teacher/login", { email, password })
-          SingIn({ email, password, type: UserType.TEACHER, id: response.data.id})
+          SingIn({
+            email,
+            password,
+            type: UserType.TEACHER,
+            id: response.data.id,
+            schoolId: response.data.schoolId,
+            coins: response.data.coins,
+          })
           notify({ message: "Login do professor realizado com sucesso" })
           navigateTo("/app/teacher")
           break
         case "admin":
           response = await api.post("/admin/login", { email, password })
-          SingIn({ email, password, type: UserType.ADMIN , id: response.data.id})
+          SingIn({
+            email,
+            password,
+            type: UserType.ADMIN,
+            id: response.data.id,
+          })
           notify({ message: "Login do administrador realizado com sucesso" })
           navigateTo("/app/admin")
           break

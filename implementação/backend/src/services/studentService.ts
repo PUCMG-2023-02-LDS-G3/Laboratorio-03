@@ -49,6 +49,17 @@ class StudentService {
     });
   }
 
+  async updateStudent(student: Student) {
+    return await this.db.student.update({
+      where: {
+        id: student.id,
+      },
+      data: {
+        ...student,
+      },
+    });
+  }
+
   async updateCoins(id: string, coins: number) {
     return await this.db.student.update({
       where: {

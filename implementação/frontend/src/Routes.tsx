@@ -5,6 +5,8 @@ import SingUpPage from "./pages/SingUp/SingUpPage"
 
 import Admin from "./pages/app/Admin"
 import Company from "./pages/app/Company"
+import Teacher from "./pages/app/Teacher"
+import Student from "./pages/app/Student"
 
 function Routes() {
   return (
@@ -17,6 +19,12 @@ function Routes() {
         </Route>
         <Route path="/app">
           <Route path="company/*" element={<Company />} />
+        </Route>
+        <Route path="/app">
+          <Route path="teacher/*" element={<Teacher />} />
+        </Route>
+        <Route path="/app">
+          <Route path="student/*" element={<Student />} />
         </Route>
       </AppRoutes>
     </BrowserRouter>
