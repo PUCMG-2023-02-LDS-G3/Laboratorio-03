@@ -50,7 +50,7 @@ class StudentService {
   }
 
   async updateCoins(id: string, coins: number) {
-    await this.db.student.update({
+    return await this.db.student.update({
       where: {
         id: id,
       },
@@ -60,19 +60,19 @@ class StudentService {
     });
   }
 
-  async addAdvantage(email: string, advantage: Advantage) {
+  async addAdvantage(id: string, advantage: Omit<Advantage, "studentId">) {
     await this.db.student.update({
       where: {
-        email: email
+        id: id
       },
       data: {
         advantages: {
           create: {
-            ...advantage
-          }
-        }
-      }
-    })
+            ...advantage,
+          },
+        },
+      },
+    });
   }
 }
 

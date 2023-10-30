@@ -16,6 +16,8 @@ import * as yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
 import api from "../../Utils/api"
 import notify from "../../hooks/useNotify"
+import useUser from "../../hooks/useUser"
+import { UserType } from "../../Utils/enum/UserType"
 
 const schema = yup.object().shape({
   email: yup.string().required("Obrigatório"),
@@ -40,30 +42,45 @@ function LoginPage() {
   } = useForm({ resolver: yupResolver(schema) })
 
   const navigateTo = useNavigate()
+  const { SingIn } = useUser()
 
   const onSubmit = async ({ email, password, type }: LoginSchema) => {
+    let response
     try {
       switch (type) {
         case "student":
-          await api.post("/student/login", { email, password })
-          notify({ message: "Login realizado com sucesso" })
-          navigateTo("/home")
+          response = await api.post("/student/login", { email, password })
+          SingIn({ email, password, type: UserType.STUDENT, id: response.data.id})
+          notify({ message: "Login do aluno realizado com sucesso" })
+          navigateTo("/app/student")
+
           break
         case "company":
-          await api.post("/company/login", { email, password })
-          notify({ message: "Login realizado com sucesso" })
-          navigateTo("/home")
+          response = await api.post("/company/login", { email, password })
+          SingIn({ email, password, type: UserType.COMPANY, id: response.data.id })
+          notify({ message: "Login da parceira realizado com sucesso" })
+          navigateTo("/app/company")
+
           break
         case "teacher":
+          response = await api.post("/teacher/login", { email, password })
+          SingIn({ email, password, type: UserType.TEACHER, id: response.data.id})
+          notify({ message: "Login do professor realizado com sucesso" })
+          navigateTo("/app/teacher")
           break
         case "admin":
+          response = await api.post("/admin/login", { email, password })
+          SingIn({ email, password, type: UserType.ADMIN , id: response.data.id})
+          notify({ message: "Login do administrador realizado com sucesso" })
+          navigateTo("/app/admin")
           break
         default:
           alert("Tipo de usuário inválido")
           break
       }
     } catch (error) {
-      notify({message: "Erro ao fazer login", type: "error"})
+      console.error(error)
+      notify({ message: "Erro ao fazer login", type: "error" })
     }
   }
 
@@ -98,21 +115,21 @@ function LoginPage() {
                 )}
               </VStack>
 
-              <Button type="submit" colorScheme="facebook">
+              <Box textAlign={"center"}>
+                <Text>Entrar como</Text>
+                <Select {...register("type")}>
+                  <option value="student">Estudante</option>
+                  <option value="company">Parceiro</option>
+                  <option value="teacher">Professor</option>
+                  <option value="admin">Admin</option>
+                </Select>
+              </Box>
+
+              <Button type="submit" colorScheme="orange">
                 Entrar
               </Button>
             </VStack>
           </form>
-
-          <Box textAlign={"center"}>
-            <Text>Entrar como</Text>
-            <Select {...register("type")}>
-              <option value="student">Estudante</option>
-              <option value="company">Parceiro</option>
-              <option value="teacher">Professor</option>
-              <option value="admin">Admin</option>
-            </Select>
-          </Box>
 
           <Text>
             Não possui uma conta?
