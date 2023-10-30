@@ -1,15 +1,40 @@
-import { Box, Button, Popover, PopoverBody, PopoverContent, PopoverTrigger, Table, TableContainer, Tbody, Td, Text, Th, Thead, Tr, VStack } from "@chakra-ui/react"
+import {
+  Button,
+  Popover,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  VStack,
+} from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import useUser from "../../../../hooks/useUser"
 import { useNavigate } from "react-router-dom"
 import api from "../../../../Utils/api"
 import { LuGripVertical, LuPencil, LuTrash } from "react-icons/lu"
+import notify from "../../../../hooks/useNotify"
+
+type AdvantageSchema = {
+    id: string
+  companyId: string
+  name: string
+  price: number
+}
 
 function ManageAdvantages() {
   const { user } = useUser()
   const navigateTo = useNavigate()
 
-  const [advantages, setAdvantages] = useState([])
+  const [advantages, setAdvantages] = useState<AdvantageSchema[]>(
+    [] as AdvantageSchema[]
+  )
 
   useEffect(() => {
     if (!user) {
@@ -19,7 +44,7 @@ function ManageAdvantages() {
 
     const fetchAdvantages = async () => {
       const { data } = await api.post("/company/advantage", { id: user.id })
-      setAdvantages(data.advantages)
+      setAdvantages(data)
     }
 
     fetchAdvantages()
@@ -27,6 +52,20 @@ function ManageAdvantages() {
 
   const handleAddAdvantages = () => {
     navigateTo("./add")
+  }
+
+  const handleEditAdvantages = (id: string) => {
+    navigateTo(`./edit/${id}`)
+  }
+
+  const handleDeleteAdvantage = async (id: string) => {
+    try {
+        await api.post("/company/advantage/delete", { companyId: user.id, id })
+        notify({ message: "Vantagem deletada com sucesso" })
+    } catch (err) {
+        console.error(err)
+        notify({ message: "Erro ao deletar vantagem", type: "error" })
+    }
   }
 
   return (
@@ -39,7 +78,7 @@ function ManageAdvantages() {
         <Text>Adicionar vantagem</Text>
       </Button>
 
-      {/* {advantages.length === 0 ? (
+      {advantages.length === 0 ? (
         <Text>Nenhuma vantagem cadastrada</Text>
       ) : (
         <TableContainer>
@@ -47,12 +86,14 @@ function ManageAdvantages() {
             <Thead>
               <Tr>
                 <Th>Nome</Th>
+                <Th isNumeric>Preço</Th>
               </Tr>
             </Thead>
             <Tbody>
-              {advantages?.map((school) => (
-                <Tr key={school.id}>
-                  <Td>{school.name}</Td>
+              {advantages?.map((advantage) => (
+                <Tr key={advantage.id}>
+                  <Td>{advantage.name}</Td>
+                  <Td isNumeric>{advantage.price}</Td>
                   <Td>
                     <Popover matchWidth>
                       <PopoverTrigger>
@@ -66,6 +107,7 @@ function ManageAdvantages() {
                             bgColor={"transparent"}
                             color={"orange.500"}
                             display={"flex"}
+                            onClick={() => handleEditAdvantages(advantage.id)}
                             gap={4}>
                             <LuPencil size="20px" />
                             <Text>Editar</Text>
@@ -74,6 +116,7 @@ function ManageAdvantages() {
                             bgColor={"transparent"}
                             color={"orange.500"}
                             display={"flex"}
+                            onClick={() => handleDeleteAdvantage(advantage.id)}
                             gap={4}>
                             <LuTrash size="20px" />
                             <Text>Deletar</Text>
@@ -87,7 +130,7 @@ function ManageAdvantages() {
             </Tbody>
           </Table>
         </TableContainer>
-      )} */}
+      )}
     </VStack>
   )
 }

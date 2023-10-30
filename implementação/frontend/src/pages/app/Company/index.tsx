@@ -4,6 +4,7 @@ import AddAdvantage from "./ManageAdvantages/add"
 import ManageAdvantages from "./ManageAdvantages"
 import ManageProfile from "./ManageProfile"
 import CompanyLayout from "./CompanyLayout"
+import EditAdvantage from "./ManageAdvantages/edit"
 
 function CompanyRoute() {
   return (
@@ -24,6 +25,15 @@ function CompanyRoute() {
         element={
           <CompanyLayout>
             <AddAdvantage />
+          </CompanyLayout>
+        }
+      />
+
+       <Route
+        path="/advantages/edit/:id"
+        element={
+          <CompanyLayout>
+            <EditAdvantage />
           </CompanyLayout>
         }
       />

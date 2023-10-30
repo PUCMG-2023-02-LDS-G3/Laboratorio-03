@@ -26,6 +26,48 @@ route.post("/login", async (req: Request, res: Response) => {
   return res.status(200).json(student);
 });
 
+route.post("/update", async (req: Request, res: Response) => {
+  const { id, name, major, password, address } = req.body;
+
+  if (!id || !name || !major || !address || !password) {
+    return res.status(400).json({ error: "Dados insuficientes" });
+  }
+
+  const student = await studentService.getStudentByUUID(id);
+
+  if (!student) {
+    return res.status(400).json({ error: "Estudante não encontrado" });
+  }
+
+  const {school, transactions, ...rest} = student
+
+  await studentService.updateStudent({
+    ...rest,
+    name,
+    major,
+    address,
+    password,
+  });
+
+  return res.status(200).json({ message: "Estudante atualizado com sucesso" });
+});
+
+route.post("/profile", async (req: Request, res: Response) => {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: "Dados insuficientes" });
+  }
+
+  const student = await studentService.getStudentByUUID(id);
+
+  if (!student) {
+    return res.status(400).json({ error: "Estudante não encontrado" });
+  }
+
+  return res.status(200).json(student);
+});
+
 route.post("/register", async (req: Request, res: Response) => {
   const { email, password, name, cpf, schoolId, rg, major, address } = req.body;
 
@@ -91,7 +133,6 @@ route.post("/exchange/advantage", async (req: Request, res: Response) => {
     name: advantage.name,
     price: advantage.price,
   });
-
 
   await studentService.updateCoins(student.id, student.coins - advantage.price);
   await transactionService.createTransaction({
