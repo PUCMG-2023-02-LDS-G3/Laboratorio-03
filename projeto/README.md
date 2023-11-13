@@ -39,3 +39,7 @@ Por fim, alunos, professores e empresas parceiras precisam ter um login e uma se
 ## Diagrama de classes
 
 [Historia_de_usuarios](./historias_de_usuarios.md)
+
+## Diagrama de sequencia
+
+<img src="./Sequencia//sequencia.drawio.png"/>
