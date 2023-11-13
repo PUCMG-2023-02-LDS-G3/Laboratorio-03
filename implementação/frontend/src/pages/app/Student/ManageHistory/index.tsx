@@ -76,7 +76,7 @@ function ManageHistory() {
 
       {history.length === 0 ? (
         <Text>Não possui transações</Text>
-      ) : (
+        ) : (
         <TableContainer>
           <Table variant="striped">
             <Thead>

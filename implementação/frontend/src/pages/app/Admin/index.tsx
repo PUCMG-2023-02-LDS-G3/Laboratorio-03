@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 
 import EditSchool from "./ManageSchool/edit"
 import ManageSchool from "./ManageSchool"
@@ -8,11 +8,19 @@ import ManageTeacher from "./ManageTeacher"
 import EditTeacher from "./ManageTeacher/edit"
 import AddSchool from "./ManageSchool/add"
 import AddTeacher from "./ManageTeacher/add"
+import Welcome from "../../../components/Welcome/Welcome"
 
 function AdminRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="./school" />} />
+      <Route
+        path="/"
+        element={
+          <AdminLayout>
+            <Welcome />
+          </AdminLayout>
+        }
+      />
 
       <Route
         path="/school"
@@ -41,7 +49,6 @@ function AdminRoutes() {
         }
       />
 
-
       <Route
         path="/teacher"
         element={
@@ -68,7 +75,6 @@ function AdminRoutes() {
           </AdminLayout>
         }
       />
-
     </Routes>
   )
 }

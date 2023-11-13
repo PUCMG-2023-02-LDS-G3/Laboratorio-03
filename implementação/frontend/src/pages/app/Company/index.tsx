@@ -1,15 +1,23 @@
-import { Navigate, Route, Routes } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 
 import AddAdvantage from "./ManageAdvantages/add"
 import ManageAdvantages from "./ManageAdvantages"
 import ManageProfile from "./ManageProfile"
 import CompanyLayout from "./CompanyLayout"
 import EditAdvantage from "./ManageAdvantages/edit"
+import Welcome from "../../../components/Welcome/Welcome"
 
 function CompanyRoute() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="./advantages" />} />
+      <Route
+        path="/"
+        element={
+          <CompanyLayout>
+            <Welcome />
+          </CompanyLayout>
+        }
+      />
 
       <Route
         path="/advantages"
@@ -29,7 +37,7 @@ function CompanyRoute() {
         }
       />
 
-       <Route
+      <Route
         path="/advantages/edit/:id"
         element={
           <CompanyLayout>
@@ -37,7 +45,6 @@ function CompanyRoute() {
           </CompanyLayout>
         }
       />
-
 
       <Route
         path="/profile"

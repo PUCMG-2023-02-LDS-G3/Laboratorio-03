@@ -61,6 +61,7 @@ function ManageAdvantages() {
   const handleDeleteAdvantage = async (id: string) => {
     try {
         await api.post("/company/advantage/delete", { companyId: user.id, id })
+        setAdvantages(d => d.filter(advantage => advantage.id !== id))
         notify({ message: "Vantagem deletada com sucesso" })
     } catch (err) {
         console.error(err)

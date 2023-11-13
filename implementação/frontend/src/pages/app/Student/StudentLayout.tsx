@@ -9,8 +9,11 @@ type StudentLayoutProps = {
 function StudentLayout({ children }: StudentLayoutProps) {
   return (
     <div>
-      <Menu title="Menu do parceiro">
+      <Menu title="Menu do estudante">
         <Flex flexDir={"column"} gap={8}>
+          <Link to={"/app/student/"}>
+            <ChakraLink>Saldo da conta</ChakraLink>
+          </Link>
           <Link to={"/app/student/exchange"}>
             <ChakraLink>Trocar moedas</ChakraLink>
           </Link>
@@ -19,6 +22,9 @@ function StudentLayout({ children }: StudentLayoutProps) {
           </Link>
           <Link to={"/app/student/history"}>
             <ChakraLink>Historia</ChakraLink>
+          </Link>
+          <Link to={"/app/student/advantages"}>
+            <ChakraLink>Vantagens</ChakraLink>
           </Link>
         </Flex>
       </Menu>

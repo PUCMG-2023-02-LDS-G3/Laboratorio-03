@@ -31,8 +31,8 @@ import { useForm } from "react-hook-form"
 import useAddCoinToTeacher from "../../../../hooks/useMutation/school/useAddCoinToTeacher"
 
 function ManageTeacher() {
-  const { data: schoolsData, isLoading } = useGetSchools()
   const navigateTo = useNavigate()
+  const { data: schoolsData, isLoading } = useGetSchools()
   const { mutateAsync } = useDeleteSchool()
   const { mutateAsync: AddCoinMutationAsync } = useAddCoinToTeacher()
 
@@ -43,6 +43,11 @@ function ManageTeacher() {
     defaultValues: {
       changeSchoolId: "",
       teacherId: "",
+      amount: 0,
+    },
+    values: {
+      changeSchoolId: schoolsData ? schoolsData[0]?.id : "",
+      teacherId: teachers[0]?.id || "",
       amount: 0,
     },
   })
@@ -99,10 +104,9 @@ function ManageTeacher() {
     amount: number
   }) => {
     try {
-
       console.log(data)
 
-      if(!Number(data.amount) || !data.teacherId) {
+      if (!Number(data.amount) || !data.teacherId) {
         return
       }
 
@@ -131,7 +135,7 @@ function ManageTeacher() {
 
       <Flex align={"flex-end"} gap={8}>
         <VStack>
-          <Text fontSize={"xl"}>Trocar instituição de ensino</Text>
+          <Text fontSize={"xl"}>Instituição de ensino selecionada</Text>
           <Select {...register("changeSchoolId")}>
             {schoolsData?.map((school) => (
               <option key={school.id} value={school.id}>
@@ -141,7 +145,9 @@ function ManageTeacher() {
           </Select>
         </VStack>
 
-        <Button onClick={handleSubmit(handleChangeSchool)}>Trocar</Button>
+        <Button onClick={handleSubmit(handleChangeSchool)}>
+          Trocar instituição
+        </Button>
       </Flex>
 
       <Flex align={"flex-end"} gap={8}>
@@ -161,7 +167,9 @@ function ManageTeacher() {
           <Input type="number" {...register("amount")} />
         </VStack>
 
-        <Button onClick={handleSubmit(handleAddCoinsToTeacher)}>Adicionar</Button>
+        <Button onClick={handleSubmit(handleAddCoinsToTeacher)}>
+          Enviar moedas
+        </Button>
       </Flex>
 
       {teachers.length === 0 ? (

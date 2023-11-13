@@ -5,24 +5,39 @@ import api from "../../../../Utils/api"
 import useUser from "../../../../hooks/useUser"
 import notify from "../../../../hooks/useNotify"
 import useGetCompanies from "../../../../hooks/useQuery/useGetCompanies"
+import { Student } from "../../../../Utils/models"
 
 function ManageExchange() {
-  const { user } = useUser()
+  const { user, updateUser } = useUser()
   const [companyId, setCompanyId] = useState("")
   const [advantages, setAdvantages] = useState([] as any[])
   const { data } = useGetCompanies()
 
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, resetField} = useForm({
     defaultValues: {
       changeCompanyId: "",
       advantageId: "",
     },
+    values: {
+      changeCompanyId: companyId,
+      advantageId: advantages[0]?.id,
+    },
   })
+
+  useEffect(() => {
+    if (!data) return
+
+    const company = data[0]
+
+    setCompanyId(company.id)
+  }, [data])
 
   useEffect(() => {
     const company = data?.find((company) => company.id === companyId)
 
-    setAdvantages(company?.advantages || [])
+    if (!company) return
+
+    setAdvantages(company.advantages)
   }, [data, companyId])
 
   const handleChangeCompany = (data: { changeCompanyId: string }) =>
@@ -30,19 +45,21 @@ function ManageExchange() {
 
   const onSubmit = async ({ advantageId }: { advantageId: string }) => {
     try {
-      await api.post("/student/exchange/advantage", {
-        id: user.id,    
+      const response = await api.post("/student/exchange/advantage", {
+        id: user.id,
         advantageId: advantageId,
       })
 
+      const student = response.data as Student
+      updateUser({ ...user, coins: student.coins })
+
+      resetField("advantageId")
       notify({ message: "Troca realizada com sucesso" })
     } catch (err) {
       console.log(err)
-      notify({ message: "Erro ao realizar troca", type: "error"})
+      notify({ message: "Erro ao realizar troca", type: "error" })
     }
   }
-
-  console.log(user)
 
   return (
     <Flex flexDir={"column"} gap={12} align={"center"}>
@@ -51,12 +68,12 @@ function ManageExchange() {
       </Text>
 
       <Text fontWeight={"bold"} fontSize={"xl"}>
-        Saldo atual = {user?.coins}
+        Saldo atual: {user?.coins} moedas
       </Text>
 
       <Flex align={"flex-end"} gap={8}>
         <VStack>
-          <Text fontSize={"xl"}>Trocar parceira</Text>
+          <Text fontSize={"xl"}>Parceira selecionada</Text>
           <Select {...register("changeCompanyId")}>
             {data?.map((company) => (
               <option key={company.id} value={company.id}>
@@ -69,7 +86,7 @@ function ManageExchange() {
         <Button
           colorScheme="orange"
           onClick={handleSubmit(handleChangeCompany)}>
-          Trocar
+          Trocar parceira
         </Button>
       </Flex>
 

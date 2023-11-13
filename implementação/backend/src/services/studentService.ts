@@ -68,6 +68,11 @@ class StudentService {
       data: {
         coins: coins,
       },
+      include: {
+        school: true,
+        transactions: true,
+        StudentAdvantages: true
+      },
     });
   }
 

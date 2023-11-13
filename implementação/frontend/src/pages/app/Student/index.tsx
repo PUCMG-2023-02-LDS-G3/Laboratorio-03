@@ -1,13 +1,22 @@
-import { Navigate, Route, Routes } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 import StudentLayout from "./StudentLayout"
 import ManageStudent from "./ManageStudent"
 import ManageHistory from "./ManageHistory"
 import ManageExchange from "./ManageExchange"
+import Welcome from "../../../components/Welcome/Welcome"
+import ManageAdvantages from "./ManageAdvantages"
 
 function StudentRoute() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="./profile" />} />
+      <Route
+        path="/"
+        element={
+          <StudentLayout>
+            <Welcome />
+          </StudentLayout>
+        }
+      />
 
       <Route
         path="/profile"
@@ -32,6 +41,15 @@ function StudentRoute() {
         element={
           <StudentLayout>
             <ManageExchange />
+          </StudentLayout>
+        }
+      />
+
+       <Route
+        path="/advantages"
+        element={
+          <StudentLayout>
+            <ManageAdvantages />
           </StudentLayout>
         }
       />

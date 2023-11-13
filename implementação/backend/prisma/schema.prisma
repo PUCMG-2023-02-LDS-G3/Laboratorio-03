@@ -11,19 +11,20 @@ datasource db {
 }
 
 model Student {
-  id           String        @id @default(uuid())
-  name         String
-  cpf          String        @unique
-  email        String        @unique
-  password     String
-  coins        Int
-  schoolId     String
-  rg           String        @default("21.333.333")
-  address      String        @default("Belo Horizonte")
-  major        String        @default("Engenharia de software")
-  school       School        @relation(fields: [schoolId], references: [id])
-  transactions Transaction[]
-  advantages   Advantage[]
+  id                String              @id @default(uuid())
+  name              String
+  cpf               String              @unique
+  email             String              @unique
+  password          String
+  coins             Int
+  schoolId          String
+  rg                String              @default("21.333.333")
+  address           String              @default("Belo Horizonte")
+  major             String              @default("Engenharia de software")
+  school            School              @relation(fields: [schoolId], references: [id])
+  transactions      Transaction[]
+  advantages        Advantage[]
+  StudentAdvantages StudentAdvantages[]
 }
 
 model Transaction {
@@ -69,13 +70,22 @@ model Company {
 }
 
 model Advantage {
-  id        String   @id @default(uuid())
-  name      String
-  price     Int
-  studentId String?
-  companyId String?
-  Company   Company? @relation(fields: [companyId], references: [id])
-  Student   Student? @relation(fields: [studentId], references: [id])
+  id                String              @id @default(uuid())
+  name              String
+  price             Int
+  studentId         String?
+  companyId         String?
+  Company           Company?            @relation(fields: [companyId], references: [id])
+  Student           Student?            @relation(fields: [studentId], references: [id])
+  StudentAdvantages StudentAdvantages[]
+}
+
+model StudentAdvantages {
+  id          String    @id @default(uuid())
+  studentId   String
+  advantageId String
+  Student     Student   @relation(fields: [studentId], references: [id])
+  Advantage   Advantage @relation(fields: [advantageId], references: [id])
 }
 
 model Admin {

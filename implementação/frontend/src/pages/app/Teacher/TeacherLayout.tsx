@@ -15,6 +15,9 @@ function TeacherLayout({ children }: TeacherLayoutProps) {
     <div>
       <Menu title="Menu do parceiro">
         <Flex flexDir={"column"} gap={8}>
+          <Link to={"/app/teacher/"}>
+            <ChakraLink>Saldo da conta</ChakraLink>
+          </Link>
           <Link to={"/app/teacher/send"}>
             <ChakraLink>Enviar moeda</ChakraLink>
           </Link>

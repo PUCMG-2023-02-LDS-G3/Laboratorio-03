@@ -79,7 +79,7 @@ function AddTeacher() {
       </VStack>
 
       <Button colorScheme="orange" onClick={handleSubmit(onSubmit)}>
-        Editar
+        Adicionar novo professor
       </Button>
     </Flex>
   )

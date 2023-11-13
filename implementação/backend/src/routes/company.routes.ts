@@ -2,9 +2,11 @@ import { Router, Request, Response } from "express";
 import { Advantage, PrismaClient } from "@prisma/client";
 import { randomUUID } from "crypto";
 import CompanyService from "../services/companyService.ts";
+import StudentAdvantagesService from "../services/studentAdvantagesService.ts";
 
 const prisma = new PrismaClient();
 const companyService = new CompanyService(prisma);
+const studentAdvantageService = new StudentAdvantagesService(prisma);
 const route = Router();
 
 route.get("/", async (req: Request, res: Response) => {
@@ -65,11 +67,15 @@ route.post("/profile/update", async (req: Request, res: Response) => {
 
   const oldCompany = await companyService.getCompanyByUUID(id);
 
-  if(!oldCompany) {
+  if (!oldCompany) {
     return res.status(400).json({ error: "Empresa não encontrada" });
   }
 
-  const company = await companyService.updateCompany({...oldCompany, name, password});
+  const company = await companyService.updateCompany({
+    ...oldCompany,
+    name,
+    password,
+  });
 
   return res.status(201).json(company);
 });
@@ -145,6 +151,25 @@ route.post("/advantage/delete", async (req: Request, res: Response) => {
   const advantage = await companyService.deleteAdvantage(companyId, id);
 
   return res.status(201).json(advantage);
+});
+
+route.post("/advantage/students", async (req: Request, res: Response) => {
+  const { advantageId } = req.body;
+
+  if (!advantageId) {
+    return res.status(400).json({ error: "Dados insuficientes" });
+  }
+
+  try {
+    const students =
+      await studentAdvantageService.getStudentAdvantagesByAdvantageId(
+        advantageId
+      );
+
+    return res.status(200).json(students);
+  } catch (err) {
+    return res.status(500).json({ error: "Erro ao buscar estudantes" });
+  }
 });
 
 export default route;

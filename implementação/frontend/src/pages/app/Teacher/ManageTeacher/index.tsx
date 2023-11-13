@@ -14,17 +14,23 @@ import api from "../../../../Utils/api"
 
 function ManageTeacher() {
   const { user } = useUser()
-  const { register, handleSubmit } = useForm({
+    const { data, isLoading } = useGetSchools()
+  const [students, setStudents] = useState<StudentSchema[]>(
+    [] as StudentSchema[]
+  )
+  const { register, handleSubmit, resetField } = useForm({
     defaultValues: {
       amount: 0,
       description: "",
       studentId: "",
     },
+    values: {
+      amount: 0,
+      description: "",
+      studentId: students ? students[0]?.id : "",
+    }
   })
-  const { data, isLoading } = useGetSchools()
-  const [students, setStudents] = useState<StudentSchema[]>(
-    [] as StudentSchema[]
-  )
+
 
   useEffect(() => {
     if (!user) return
@@ -49,7 +55,6 @@ function ManageTeacher() {
     description: string
     studentId: string
   }) => {
-    console.log(amount, description, studentId)
     if (Number(amount) <= 0 || !description || !studentId) return
 
     try {
@@ -60,6 +65,8 @@ function ManageTeacher() {
         description,
       })
       notify({ message: "Moeda enviada com sucesso" })
+      resetField("amount")
+      resetField("description")
     } catch (err) {
       console.error(err)
       notify({ message: "Erro ao enviar moeda", type: "error" })

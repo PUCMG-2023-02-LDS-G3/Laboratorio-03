@@ -48,7 +48,7 @@ function AddAdvantages() {
       </VStack>
 
       <Button colorScheme="orange" onClick={handleSubmit(onSubmit)}>
-        Adicionar
+        Adicionar nova vantagem
       </Button>
     </Flex>
   )

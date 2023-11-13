@@ -4,11 +4,13 @@ import StudentService from "../services/studentService.js";
 import { randomUUID } from "crypto";
 import AdvantageService from "../services/advantageService.ts";
 import TransactionService from "../services/transactionService.ts";
+import StudentAdvantagesService from "../services/studentAdvantagesService.ts";
 
 const prisma = new PrismaClient();
 const studentService = new StudentService(prisma);
 const advantageService = new AdvantageService(prisma);
 const transactionService = new TransactionService(prisma);
+const studentAdvantageService = new StudentAdvantagesService(prisma);
 const route = Router();
 
 route.get("/", async (req: Request, res: Response) => {
@@ -39,7 +41,7 @@ route.post("/update", async (req: Request, res: Response) => {
     return res.status(400).json({ error: "Estudante não encontrado" });
   }
 
-  const {school, transactions, ...rest} = student
+  const { school, transactions, ...rest } = student;
 
   await studentService.updateStudent({
     ...rest,
@@ -123,18 +125,19 @@ route.post("/exchange/advantage", async (req: Request, res: Response) => {
     return res.status(400).json({ error: "Vantagem não encontrada" });
   }
 
+  console.log(student.coins, advantage.price)
+
   if (student.coins < advantage.price) {
     return res.status(400).json({ error: "Saldo insuficiente" });
   }
 
-  await studentService.addAdvantage(student.id, {
+  await studentAdvantageService.createStudentAdvantages({
     id: randomUUID(),
-    companyId: advantage.companyId,
-    name: advantage.name,
-    price: advantage.price,
+    advantageId: advantage.id,
+    studentId: student.id,
   });
 
-  await studentService.updateCoins(student.id, student.coins - advantage.price);
+  const responseStudent = await studentService.updateCoins(student.id, student.coins - advantage.price);
   await transactionService.createTransaction({
     id: randomUUID(),
     quantity: advantage.price,
@@ -144,6 +147,20 @@ route.post("/exchange/advantage", async (req: Request, res: Response) => {
     description: advantage.name,
     toCompanyId: advantage.companyId,
   });
+
+  return res.status(200).json(responseStudent);
+});
+
+route.post("/advantages", async (req: Request, res: Response) => {
+  const { studentId } = req.body;
+
+  if (!studentId) {
+    return res.status(400).json({ error: "Dados insuficientes" });
+  }
+
+  const advantages =
+    await studentAdvantageService.getStudentAdvantagesByStudentId(studentId);
+  return res.status(200).json(advantages);
 });
 
 route.post("/transactions", async (req: Request, res: Response) => {

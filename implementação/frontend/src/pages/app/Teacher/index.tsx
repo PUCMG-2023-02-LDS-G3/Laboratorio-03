@@ -1,13 +1,21 @@
-import { Navigate, Route, Routes } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 
 import ManageTeacher from "./ManageTeacher"
 import TeacherLayout from "./TeacherLayout"
 import ManageHistory from "./ManageHistory"
+import Welcome from "../../../components/Welcome/Welcome"
 
 function TeacherRoute() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="./send" />} />
+      <Route
+        path="/"
+        element={
+          <TeacherLayout>
+            <Welcome />
+          </TeacherLayout>
+        }
+      />
 
       <Route
         path="/send"
@@ -18,7 +26,7 @@ function TeacherRoute() {
         }
       />
 
-       <Route
+      <Route
         path="/history"
         element={
           <TeacherLayout>

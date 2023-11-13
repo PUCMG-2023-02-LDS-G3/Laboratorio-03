@@ -13,6 +13,7 @@ export type UserSchema = {
 interface UserContextData {
   user: UserSchema
   SingIn: (user: UserSchema) => void
+  updateUser: (user: UserSchema) => void
   SingOut: () => void
   isUserLogged: () => boolean
 }
@@ -39,10 +40,14 @@ function UserProvider({ children }: UserProviderProps) {
     })
   }
 
+  const updateUser = (user: UserSchema) => {
+    setUser(user)
+  }
+
   const isUserLogged = () => user.email !== "" && user.password !== ""
 
   return (
-    <UserContext.Provider value={{ SingIn, SingOut, user, isUserLogged }}>
+    <UserContext.Provider value={{ SingIn, SingOut, user, isUserLogged, updateUser}}>
       {children}
     </UserContext.Provider>
   )
