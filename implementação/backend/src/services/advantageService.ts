@@ -12,6 +12,9 @@ class AdvantageService {
       where: {
         id: uuid,
       },
+      include: {
+        Company: true,
+      }
     });
   }
 }

@@ -5,12 +5,15 @@ import { randomUUID } from "crypto";
 import AdvantageService from "../services/advantageService.ts";
 import TransactionService from "../services/transactionService.ts";
 import StudentAdvantagesService from "../services/studentAdvantagesService.ts";
+import EmailService from "../services/emailService.ts";
+import CompanyService from "../services/companyService.ts";
 
 const prisma = new PrismaClient();
 const studentService = new StudentService(prisma);
 const advantageService = new AdvantageService(prisma);
 const transactionService = new TransactionService(prisma);
 const studentAdvantageService = new StudentAdvantagesService(prisma);
+const emailService = new EmailService();
 const route = Router();
 
 route.get("/", async (req: Request, res: Response) => {
@@ -125,8 +128,6 @@ route.post("/exchange/advantage", async (req: Request, res: Response) => {
     return res.status(400).json({ error: "Vantagem não encontrada" });
   }
 
-  console.log(student.coins, advantage.price)
-
   if (student.coins < advantage.price) {
     return res.status(400).json({ error: "Saldo insuficiente" });
   }
@@ -137,7 +138,11 @@ route.post("/exchange/advantage", async (req: Request, res: Response) => {
     studentId: student.id,
   });
 
-  const responseStudent = await studentService.updateCoins(student.id, student.coins - advantage.price);
+  const responseStudent = await studentService.updateCoins(
+    student.id,
+    student.coins - advantage.price
+  );
+  
   await transactionService.createTransaction({
     id: randomUUID(),
     quantity: advantage.price,
@@ -147,6 +152,9 @@ route.post("/exchange/advantage", async (req: Request, res: Response) => {
     description: advantage.name,
     toCompanyId: advantage.companyId,
   });
+
+  emailService.sendEmail(student.email, "Vantagem adquirida", `Olá ${student.name}, informamos que sua vantagem ${advantage.name} foi adquirida com sucesso!`)
+  emailService.sendEmail(advantage.Company?.email || "", "Vantagem adquirida", `Olá ${advantage.Company?.name}, informamos que sua vantagem ${advantage.name} foi adquirida por ${student.name} com sucesso!`)
 
   return res.status(200).json(responseStudent);
 });
