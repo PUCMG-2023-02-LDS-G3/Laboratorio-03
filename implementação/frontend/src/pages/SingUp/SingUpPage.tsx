@@ -58,8 +58,9 @@ function SingUpPage() {
             name: data.name,
             cpf: data.id,
             schoolId: data.school,
-            rg: "",
-            address: "",
+            rg: "{{RG}}",
+            address: "{{ADDRESS}}",
+            major: "{{MAJOR}}",
           })
           notify({ message: "Conta criada com sucesso" })
           break
