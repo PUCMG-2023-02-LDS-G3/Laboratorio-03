@@ -1,7 +1,6 @@
 import { Flex, Text } from "@chakra-ui/layout"
 import useUser from "../../../../hooks/useUser"
 import { useEffect, useState } from "react"
-import api from "../../../../Utils/api"
 import {
   Table,
   TableContainer,
@@ -14,6 +13,7 @@ import {
 import useGetSchools, {
   StudentSchema,
 } from "../../../../hooks/useQuery/useGetSchools"
+import useGetTeacherTransactions from "../../../../hooks/useQuery/useGetTeacherTransactions"
 
 type HistorySchema = {
   id: string
@@ -34,17 +34,9 @@ function ManageHistory() {
     [] as StudentSchema[]
   )
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await api.post("/teacher/transactions", {
-        email: user.email,
-      })
+  const { data: transactions } = useGetTeacherTransactions({ email: user.email })
 
-      setHistory(response.data)
-    }
-
-    fetchData()
-  }, [user.email])
+  setHistory(transactions)
 
   useEffect(() => {
     if (!user) return

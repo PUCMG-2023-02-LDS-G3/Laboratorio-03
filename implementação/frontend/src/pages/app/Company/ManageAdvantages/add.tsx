@@ -1,11 +1,13 @@
 import { Button, Flex, Input, Text, VStack } from "@chakra-ui/react"
 import { useForm } from "react-hook-form"
-import api from "../../../../Utils/api"
 import useUser from "../../../../hooks/useUser"
 import notify from "../../../../hooks/useNotify"
+import useAddAdvantage from "../../../../hooks/useMutation/school/useAddAdvantage"
 
 function AddAdvantages() {
   const { user } = useUser()
+
+  const { mutateAsync } = useAddAdvantage()
 
   const { handleSubmit, register } = useForm({
     defaultValues: {
@@ -18,11 +20,7 @@ function AddAdvantages() {
     if (Number(price) <= 0 || !name) return
 
     try {
-        await api.post("/company/advantage/register", {
-          name,
-          price: Number(price),
-          companyId: user.id,
-        })
+        await mutateAsync({ name, price: Number(price), companyId: user.id })
         notify({ message: "Vantagem adicionada com sucesso" })
 
     } catch (err) {

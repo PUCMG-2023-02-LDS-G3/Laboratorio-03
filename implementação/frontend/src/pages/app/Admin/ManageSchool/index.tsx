@@ -1,28 +1,18 @@
 import {
   Button,
-  Popover,
-  PopoverBody,
-  PopoverContent,
-  PopoverTrigger,
   Skeleton,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
   Text,
-  Th,
-  Thead,
-  Tr,
   VStack,
 } from "@chakra-ui/react"
 import useGetSchools from "../../../../hooks/useQuery/useGetSchools"
-import { LuGripVertical, LuPencil, LuTrash } from "react-icons/lu"
 import { useNavigate } from "react-router-dom"
 import useDeleteSchool from "../../../../hooks/useMutation/school/useDeleteSchool"
 import notify from "../../../../hooks/useNotify"
+import SchoolTable from "./subcomponent/SchoolTable"
 
 function ManageSchool() {
   const { data, isLoading } = useGetSchools()
+
   const {mutateAsync} = useDeleteSchool()
 
   const navigateTo = useNavigate()
@@ -57,53 +47,8 @@ function ManageSchool() {
         <Text>Adicionar instituição de ensino</Text>
       </Button>
 
-      <TableContainer>
-        <Table variant="simple">
-          <Thead>
-            <Tr>
-              <Th>Nome</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {data?.map((school) => (
-              <Tr key={school.id}>
-                <Td>{school.name}</Td>
-                <Td>
-                  <Popover matchWidth>
-                    <PopoverTrigger>
-                      <Button bgColor={"transparent"} color={"orange.500"}>
-                        <LuGripVertical />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                      <PopoverBody>
-                        <Button
-                          bgColor={"transparent"}
-                          color={"orange.500"}
-                          onClick={() => handleEditSchool(school.id)}
-                          display={"flex"}
-                          gap={4}>
-                          <LuPencil size="20px" />
-                          <Text>Editar</Text>
-                        </Button>
-                        <Button
-                          bgColor={"transparent"}
-                          color={"orange.500"}
-                          onClick={() => handleDeleteSchool(school.id)}
-                          display={"flex"}
-                          gap={4}>
-                          <LuTrash size="20px" />
-                          <Text>Deletar</Text>
-                        </Button>
-                      </PopoverBody>
-                    </PopoverContent>
-                  </Popover>
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+      <SchoolTable data={data} handleEditSchool={handleEditSchool} handleDeleteSchool={handleDeleteSchool} />
+
     </VStack>
   )
 }
