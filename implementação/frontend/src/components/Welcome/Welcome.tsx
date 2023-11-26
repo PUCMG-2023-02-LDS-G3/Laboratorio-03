@@ -9,7 +9,7 @@ function Welcome() {
     <VStack>
       <Flex align={"center"} gap={2}>
         <Text fontWeight={"bold"} fontSize={["xl", "3xl"]}>
-          Seja bemvindo ao{" "}
+          Seja bem-vindo ao{" "}
         </Text>
         <Text color={"orange"} fontWeight={"bold"} fontSize={"2xl"}>
           TrocaCoins

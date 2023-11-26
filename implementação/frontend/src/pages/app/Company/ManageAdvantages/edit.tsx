@@ -5,10 +5,12 @@ import useUser from "../../../../hooks/useUser"
 import notify from "../../../../hooks/useNotify"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
+import useEditAdvantage from "../../../../hooks/useMutation/school/useEditAdvantage"
 
 function EditAdvantage() {
   const { id } = useParams()
   const { user } = useUser()
+  const { mutateAsync } = useEditAdvantage()
 
   const [name, setName] = useState("")
   const [price, setPrice] = useState(0)
@@ -41,12 +43,7 @@ function EditAdvantage() {
     if (Number(price) <= 0 || !name) return
 
     try {
-      await api.post("/company/advantage/update", {
-        id,
-        name,
-        price: Number(price),
-        companyId: user.id,
-      })
+      await mutateAsync({ id, name, price: Number(price), companyId: user.id })
       notify({ message: "Vantagem adicionada com sucesso" })
     } catch (err) {
       console.error(err)

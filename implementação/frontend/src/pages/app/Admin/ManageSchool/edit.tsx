@@ -21,11 +21,16 @@ function EditSchool() {
   const navigateTo = useNavigate()
 
   const { mutateAsync } = useEditSchool()
+  
   const {data} = useGetSchools()
+
+  const returnToManageSchool = () => {
+      navigateTo("/app/admin/")
+  }
 
   useEffect(() => {
     if (!id) {
-      navigateTo("/app/admin/")
+      returnToManageSchool()
       return
     }
 
@@ -33,19 +38,19 @@ function EditSchool() {
 
 
     if (!schoolName) {
-      navigateTo("/app/admin/")
+      returnToManageSchool()
       return
     }
 
     setSchoolName(schoolName)
-  }, [id, navigateTo, data])
+  }, [id, navigateTo, data ])
 
   const onSubmit = async (data: { name: string }) => {
     console.log(data)
 
     try {
       if (!id) {
-        navigateTo("/app/admin/")
+        returnToManageSchool()
         return
       }
 

@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import StudentService from "../services/studentService.js";
+import StudentService from "../services/studentService.ts";
 import { randomUUID } from "crypto";
 import AdvantageService from "../services/advantageService.ts";
 import TransactionService from "../services/transactionService.ts";

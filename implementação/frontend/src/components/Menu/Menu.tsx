@@ -13,6 +13,8 @@ import {
 import useDrawer from "../../hooks/useDrawer"
 import { LuMenu } from "react-icons/lu"
 import { useNavigate } from "react-router-dom"
+import { useEffect } from "react"
+import useUser from "../../hooks/useUser"
 
 type MenuProps = {
   title: string
@@ -21,12 +23,21 @@ type MenuProps = {
 
 function Menu({ title, children }: MenuProps) {
   const { isOpen, onClose, onOpen } = useDrawer()
+  const { user } = useUser()
 
   const navigateTo = useNavigate()
 
   const handleLoggout = () => {
     navigateTo("/")
   }
+
+  useEffect(() => {
+    if (!user) {
+      navigateTo("/")
+      return
+    }
+
+  }, [navigateTo, user])
 
   return (
     <>
